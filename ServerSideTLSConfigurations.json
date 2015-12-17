@@ -145,12 +145,5 @@
             "oldest_clients": [ "Firefox 1", "Chrome 1", "Windows XP IE 6", "Opera 4", "Safari 1", "Java 6" ]
         }
     },
-    "signatures": [
-        {
-            "type": "pgp",
-            "keyid": "E60892BB9BD89A69F759A1A0A3D652173B763E8F",
-            "location": "https://mozilla.github.io/server-side-tls/signatures/E60892BB9BD89A69F759A1A0A3D652173B763E8F.sig"
-        }
-    ],
     "version": 4.0
 }
