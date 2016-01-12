@@ -438,6 +438,7 @@ Before Apache 2.4.7, the DH parameter is always set to 1024 bits and is not user
 # the path doesn't need to exist
 SSLSessionCache         shmcb:/path/to/ssl_gcache_data(5120000)
 </pre>
+= Certificates Switching =
 
 == Haproxy ==
 
@@ -505,12 +506,16 @@ ciphers = "<paste intermediate ciphersuite here>"
 # type: boolean
 prefer-server-ciphers = on
 </pre>
+Certificates Switching is a technique by which a server provides a different X.509 certificate to a client based on specific selection criteria. This technique is used primarily to maintain backward compatibility with very old clients, such as Internet Explorer 6 on Windows XP SP2.
 
 == Amazon Web Services Elastic Load Balancer (AWS ELB) ==
+On XPSP2, IE6 is only able to establish connections to servers that provide a certificate signed with sha1WithRSAEncryption. Those certificates are note issued by modern CAs anymore, and all sites have been encouraged to upgrade to SHA-256 certificates. As modern browsers gradually block connections backed by SHA-1 certificates, sites that need to maintain compatibility with XPSP2 must implement certificates switching to provide a SHA-1 cert to old clients and a SHA-256 cert to modern ones.
 
 The ELB service supports TLS 1.2 and ciphers ordering, but lacks support for custom DH parameters and OCSP Stapling.
+Certificate switching can be implemented in various ways. A simplistic approach is to select the certificate based on the protocol version (SHA-256 to TLS clients, SHA-1 to SSLv3 ones). A more sophisticated approach consists at looking inside the CLIENT HELLO for SHA-256 support in the "signature_algorithms" extension.
 
 The default configuration of ELBs has old settings, that can be customized in the Web Console or via the API. We recommend that you use the [[Security/Server_Side_TLS#elb_ciphers.py]] to enforce the right TLS configuration on an elastic load balancer.
+Few servers currently support cert switching. It is possible to implement it using [https://jve.linuxwall.info/blog/index.php?post/2015/10/04/SHA1/SHA256-certificate-switching-with-HAProxy HAProxy], and vendors like Cloudflare propose it in their offering.
 
 Below is a side-by-side comparison of the 'intermediate' recommended configuration versus the default ELB configuration. The top ciphers are the same, but SSLv3 and various deprecated ciphers are removed from the intermediate configuration.
 
